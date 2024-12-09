@@ -1,10 +1,8 @@
 from functools import partial
-
 import torch
 import torch.nn as nn
 import numpy as np
 from einops import rearrange
-
 from swin_unet import PatchEmbedding, BasicBlock, PatchExpanding, BasicBlockUp
 from utils.pos_embed import get_2d_sincos_pos_embed
 
@@ -13,7 +11,6 @@ class SwinMAE(nn.Module):
     """
     Masked Auto Encoder with Swin Transformer backbone
     """
-
     def __init__(self, img_size: int = 224, patch_size: int = 4, mask_ratio: float = 0.75, in_chans: int = 3,
                  decoder_embed_dim=512, norm_pix_loss=False,
                  depths: tuple = (2, 2, 6, 2), embed_dim: int = 96, num_heads: tuple = (3, 6, 12, 24),

@@ -12,7 +12,7 @@ import torchvision.transforms as transforms
 import torchvision.datasets as datasets
 from torch.utils.data import Dataset
 import utils.misc as misc
-from utils.misc import NativeScalerWithGradNormCount as NativeScaler
+from utils.misc_update import NativeScalerWithGradNormCount as NativeScaler
 import swin_class
 from torchvision.transforms import functional as TF
 import utils_f

@@ -111,17 +111,14 @@ class JointTransform:
                 image, mask = random_rot_flip(image, mask)
             elif random.random() > 0.5:
                 image, mask = random_rotate(image, mask)
-            if random.random() > 0.5 and 'CVC' not in self.dir_name:
+            if random.random() > 0.5:
                 random_state = np.random.RandomState(None)
                 angle, translations, scale, shear = self.affine_transform.get_params(self.affine_transform.degrees, self.affine_transform.translate, self.affine_transform.scale, self.affine_transform.shear, self.size)
                 image = TF.affine(Image.fromarray(image), angle, translations, scale, shear)
                 mask = TF.affine(Image.fromarray(mask), angle, translations, scale, shear, interpolation=TF.InterpolationMode.NEAREST)
                 image = np.asarray(image)
                 mask = np.asarray(mask)
-            if random.random() >0.5 and 'CVC' not in self.dir_name:
-                random_state = np.random.RandomState(None)
-                transformed_image = elastic_transform(np.array(image), alpha=1000, sigma=30, random_state=random_state, is_mask = False)
-                transformed_mask = elastic_transform(np.array(mask), alpha=1000, sigma=30, random_state=random_state, is_mask = True)
+
         # Convert the thresholded mask back to a tensor
         image= Image.fromarray(image)
         mask = Image.fromarray(mask)
@@ -276,7 +273,7 @@ def main(args):
         device = torch.device(args.device)
         
     # Set model
-    model = swin_unet_update3.__dict__['swin_unet'](num_classes=args.num_classes)
+    model = swin_unet.__dict__['swin_unet'](num_classes=args.num_classes)
     
     # get dataset
     transform_train = transforms.Compose([
@@ -328,36 +325,11 @@ def main(args):
         )
     
     # Log output
-    if args.finetune == '':
-        status = 'fromscratch'
-    elif '800' in args.finetune and 'mri' in args.finetune:
-        status = 'mrimae'
-    elif '800' in args.finetune and 'ultrasound' in args.finetune:
-        status = 'USmae'
-    elif '538' in args.finetune:
-        status = 'oldmrimae'
-    elif 'swin_tiny_patch4_window7_224.pth' in args.finetune:
-        status = 'imgswintf'
-    elif 'img_2_rin' in args.finetune:
-        status = 'img2rinswintf'
-    elif 'petct' in args.finetune and 'checkpoint' in args.finetune:
-        status = 'petctmae'
-    elif 'pretrain-maeall' in args.finetune:
-        status = 'allmae'
-    elif 'pretrain-ctonly' in args.finetune:
-        status = 'ctonlymae'
-    elif 'simclr_petct' in args.finetune:
-        status = 'simclrpetct'
-    elif 'simclr_ctonly' in args.finetune:
-        status = 'simclrctonly'
-    elif 'simclr_mri' in args.finetune:
-        status = 'simclrmri'
-    elif 'simclr_ultrasound' in args.finetune:
-        status = 'simclrUS'
-    else:
-        status = 'none'
-        
-    study_name = args.output_dir +'/update3'+ args.task+'_'+args.datapercent+'_'+'fold'+args.fold_num+args.optimizer+'_warmup'+str(args.warmup_epochs)+'_lr'+str(args.lr).split('.')[-1]+status+'_size'+str(args.input_size)+'_batchsize'+str(args.batch_size*args.gpu_num)
+    
+    status = 'pretrain'
+    
+    ### create output file name
+    study_name = args.output_dir  +status
     
     if args.eval==True:
         study_name = args.output_dir +'/'+args.finetune.split('/')[-2]
@@ -450,36 +422,9 @@ def main(args):
 if __name__ == '__main__':
     arg = get_args_parser()
     arg = arg.parse_args()
-    if arg.finetune == '':
-        status = 'fromscratch'
-    elif '800' in arg.finetune and 'mri' in arg.finetune:
-        status = 'mrimae'
-    elif '800' in arg.finetune and 'ultrasound' in arg.finetune:
-        status = 'USmae'
-    elif '538' in arg.finetune:
-        status = 'oldmrimae'
-    elif 'pretrain-maeall' in arg.finetune:
-        status = 'allmae'
-    elif 'swin_tiny_patch4_window7_224.pth' in arg.finetune:
-        status = 'imgswintf'
-    elif 'img_2_rin' in arg.finetune:
-        status = 'img2rinswintf'
-    elif 'pretrain-ctonly' in arg.finetune:
-        status = 'ctonlymae'
-    elif 'petct' in arg.finetune and 'checkpoint' in arg.finetune:
-        status = 'petctmae'
-    elif 'simclr_petct' in arg.finetune:
-        status = 'simclrpetct'
-    elif 'simclr_ctonly' in arg.finetune:
-        status = 'simclrctonly'
-    elif 'simclr_mri' in arg.finetune:
-        status = 'simclrmri'
-    elif 'simclr_ultrasound' in arg.finetune:
-        status = 'simclrUS'
-    else:
-        status = 'none'
-    
-    study_name = arg.output_dir +'/update3'+ arg.task+'_'+arg.datapercent+'_'+'fold'+arg.fold_num+arg.optimizer+'_warmup'+str(arg.warmup_epochs)+'_lr'+str(arg.lr).split('.')[-1]+status+'_size'+str(arg.input_size)+'_batchsize'+str(arg.batch_size*arg.gpu_num)
+
+    status = 'pretrain'
+    study_name = arg.output_dir +status
     
     if arg.eval==True:
         study_name =arg.output_dir +'/'+ arg.finetune.split('/')[-2]

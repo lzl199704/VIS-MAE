@@ -171,14 +171,9 @@ class ClassificationCSVDataset(Dataset):
 
     def __getitem__(self, idx):
         img_name = self.images[idx] #]os.path.join(self.images_dir, self.images[idx])
-        if task == 'natmed':
-            img_name = img_name.replace('/raid/data/Natmed/','/raid/data/yanglab/Natmed/')
         label = convert_label(self.labels[idx]) 
-        #mask_name = os.path.join(self.masks_dir, self.images[idx])
 
-        image = Image.open(img_name).convert("RGB")
-        
-        
+        image = Image.open(img_name).convert("RGB")   
         image = TF.resize(image, self.image_size)
         image = np.asarray(image)
         

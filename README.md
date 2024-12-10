@@ -4,7 +4,7 @@ repository for paper "VIS-MAE: An Efficient Self-supervised Learning Approach on
 # Dataset preparation for pre-training and fine-tuning
 For VIS-MAE pretrained model weight training, prepare a directory containing all upstream images.
 
-For the downstream tasks of segmentation or classification, prepare a csv file containing two columns ['image','mask'] or ['image','label'].
+For the downstream tasks of segmentation or classification, prepare train/validation/test csv files containing two columns ['image','mask'] or ['image','label']. During the finetuning training, send the directory containing the train/validation/test csv files.  
 # Generating pretrained MAE-based model weights
 
 use the following command line:

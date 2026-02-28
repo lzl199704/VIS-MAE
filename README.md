@@ -11,7 +11,7 @@ use the following command line:
 ```
 OMP_NUM_THREADS=1 python -m torch.distributed.launch --nproc_per_node=8 run_pretrain.py --output_dir xxx --log_dir ./output/xxx --data_path xxx --batch_size 640 --epochs 800
 ```
-# Appyly VIS-MAE pretrained weight for fine-tuning on segmentation or classification tasks
+# Apply VIS-MAE pretrained weight for fine-tuning on segmentation or classification tasks
 command line for segmentation:
 ```
 CUDA_VISIBLE_DEVICES=0  python run_finetune_segmentation.py  --output_dir xxx --input_size 320 --fold_num 1  --data_path xxx --batch_size 32 --epochs 150  --task xxx  --transform --optimizer adamw --lr 0.001  --num_classes *number of segmentation labels+1* --warmup_epochs 40   --finetune *pretrain VIS-MAE weight*
